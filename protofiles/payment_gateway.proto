@@ -1,0 +1,52 @@
+syntax = "proto3";
+package payment_gateway;
+
+option go_package = "./protofiles/payment_gateway";
+
+service PaymentGateway {
+    rpc Login(LoginRequest) returns (LoginResponse);
+    rpc ViewBalance(BalanceRequest) returns (BalanceResponse);
+    rpc ProcessPayment(PaymentRequest) returns (PaymentResponse);
+    rpc GetTransactionState(TransactionRequest) returns (TransactionState);
+}
+
+message TransactionRequest {
+    string transaction_id = 1;
+}
+
+message TransactionState {
+    enum State {
+        PENDING = 0;
+        COMMITTED = 1;
+        ABORTED = 2;
+        TIMEOUT = 3;
+    }
+    State current_state = 1;
+}
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    string token = 1;
+}
+
+message BalanceRequest {}
+
+message BalanceResponse {
+    double balance = 1;
+}
+
+message PaymentRequest {
+    string sender = 1;
+    string receiver = 2;
+    double amount = 3;
+    string transaction_id = 4;
+}
+
+message PaymentResponse {
+    bool success = 1;
+    string message = 2;
+}

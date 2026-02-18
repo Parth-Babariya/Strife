@@ -1,0 +1,20 @@
+syntax = "proto3";
+package admin;
+
+option go_package = "./protofiles/admin";
+
+service Admin {
+    rpc AddUser(UserRequest) returns (UserResponse);
+}
+
+message UserRequest {
+    string id = 1;
+    string password = 2;
+    string bank = 3;
+    double balance = 4;
+}
+
+message UserResponse {
+    bool success = 1;
+    string message = 2;
+}

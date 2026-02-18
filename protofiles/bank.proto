@@ -1,0 +1,103 @@
+syntax = "proto3";
+package bank;
+
+option go_package = "./protofiles/bank";
+
+service Bank {
+    rpc AddUser(User) returns (UserResponse);
+    rpc ValidateUser(Credentials) returns (ValidationResponse);
+    rpc Debit(DebitRequest) returns (TransactionResponse);
+    rpc Credit(CreditRequest) returns (TransactionResponse);
+    rpc GetBalance(BalanceQuery) returns (Balance);
+    rpc ProcessTransfer(TransferRequest) returns (TransferResponse);
+    rpc GetAllUsers(Empty) returns (UserList);
+    rpc Prepare(PrepareRequest) returns (VoteResponse);
+    rpc Commit(TransactionRequest) returns (Ack);
+    rpc Abort(TransactionRequest) returns (Ack);
+}
+
+message PrepareRequest {
+    string transaction_id = 1;
+    string username = 2;
+    double amount = 3;
+}
+
+message VoteResponse {
+    bool can_commit = 1;
+}
+
+message TransactionRequest {
+    string transaction_id = 1;
+}
+
+message TransactionState {
+    enum State {
+        PENDING = 0;
+        COMMITTED = 1;
+        ABORTED = 2;
+        TIMEOUT = 3;
+    }
+    State current_state = 1;
+}
+
+message Empty {}
+message UserList {
+    repeated User users = 1;
+}
+
+message User {
+    string id = 1;
+    string password = 2;
+    double balance = 3;
+}
+
+message Credentials {
+    string username = 1;
+    string password = 2;
+}
+
+message ValidationResponse {
+    bool valid = 1;
+}
+
+message DebitRequest {
+    string username = 1;
+    double amount = 2;
+}
+
+message CreditRequest {
+    string username = 1;
+    double amount = 2;
+}
+
+message TransferRequest {
+    string sender = 1;
+    string receiver = 2;
+    double amount = 3;
+    string transaction_id = 4;
+}
+message TransferResponse {
+    bool success = 1;
+    string message = 2;
+}
+message TransactionResponse {
+    bool success = 1;
+    string message = 2;
+}
+message BalanceQuery {
+    string username = 1;
+}
+
+
+message Balance {
+    double amount = 1;
+}
+
+message Ack {
+    bool success = 1;
+    string message = 2;
+}
+message UserResponse {
+    bool success = 1;
+    string message = 2;
+}
